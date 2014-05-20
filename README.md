@@ -11,7 +11,10 @@ Alat is a client-side javascript library for database web application developmen
 * Predefined GUI elements 
 * Flexible GUI tables with data entry and pivot tables for reporting
 * Field recalculation
+
 ... and much more...
+
+![image](https://raw.githubusercontent.com/sipavlovic/images/master/example1.png)
 
 ##License
 
