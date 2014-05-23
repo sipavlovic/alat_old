@@ -1,6 +1,6 @@
 #Alat
 
-Alat is a client-side javascript library for database web application development.
+Alat is a client-side javascript framework for database web application development.
 
 ##Features
 
