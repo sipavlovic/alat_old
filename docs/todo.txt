@@ -1,0 +1,13 @@
+TODO LIST:
+
+- Keys and key events revision
+- Better background processing (matrix calc for example)
+- Focus functionality and rowid sync on Matrix GUI element
+- Finish Action functionality on Matrix GUI element
+- Fields nullable/mandatory parameter and null/default value parameter
+- Fields validity function parameter (return undefined if not correct)
+- server2datatype i datatype2server communication
+    - for datetime: ISO 8601
+    - for number: datatype
+- Class rewrite usin prototypes  
+
