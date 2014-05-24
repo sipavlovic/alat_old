@@ -487,11 +487,20 @@ alat.gui.classic.Table = function(parent,page_size) {
 	// keydown handler for input cells
     this.cell_on_key_down = function(event) {
         var o = event.target;
-        if ([40,38,33,34,114,115].indexOf(event.keyCode)!=-1) {
+        var mod = o.alat_block.key_handler.calc_ascm_code(event.altKey,event.shiftKey,event.ctrlKey,event.metaKey);
+        var t = o.alat_block.get_key_event(event.keyCode,mod);
+        //alat.lib.log('Key:'+event.keyCode+' mod:'+mod+' target:'+t);
+        if ([alat.const.KEY_HANDLER_TARGET_INSERT_ROW,
+             alat.const.KEY_HANDLER_TARGET_DELETE_ROW,
+             alat.const.KEY_HANDLER_TARGET_ACTION            
+            ].indexOf(t)!=-1) {
+            o.alat_block.gui_set(o.alat_fieldname,o.alat_block.calc_eval(o.value));
+        }
+        if ([40,38,33,34,27].indexOf(event.keyCode)!=-1) {
             o.alat_block.gui_set(o.alat_fieldname,o.alat_block.calc_eval(o.value));
         }
 		// action
-		if (event.keyCode == 13) {
+		if (t == alat.const.KEY_HANDLER_TARGET_ACTION) {
 			o.alat_table.run_action(o.alat_fieldname);
 		}
         alat.manager.current_block().gui_manager.on_key_down(event);
@@ -1204,13 +1213,21 @@ alat.gui.classic.Edit = function(parent,fieldname) {
     this.fieldname = fieldname;
 	// on key down event handler
 	this.on_key_down = function(event) {
-		if ([40,38,33,34,114,115].indexOf(event.keyCode)!=-1) {
-			var o = event.target.parent_object;
+        var o = event.target.parent_object;
+        var mod = o.block.key_handler.calc_ascm_code(event.altKey,event.shiftKey,event.ctrlKey,event.metaKey);
+        var t = o.block.get_key_event(event.keyCode,mod);
+        //alat.lib.log('Key:'+event.keyCode+' mod:'+mod+' target:'+t);
+        if ([alat.const.KEY_HANDLER_TARGET_INSERT_ROW,
+             alat.const.KEY_HANDLER_TARGET_DELETE_ROW,
+             alat.const.KEY_HANDLER_TARGET_ACTION
+            ].indexOf(t)!=-1) {
+            o.block.gui_set(o.fieldname,o.block.calc_eval(o.obj.value));
+        }
+		if ([40,38,33,34,27].indexOf(event.keyCode)!=-1) {
 			o.block.gui_set(o.fieldname,o.block.calc_eval(o.obj.value));
 		}
 		// action
-		if (event.keyCode == 13) {
-			var o = event.target.parent_object;
+		if (t == alat.const.KEY_HANDLER_TARGET_ACTION) {
 			o.run_action();
 		}
 		alat.manager.current_block().gui_manager.on_key_down(event);
@@ -1615,9 +1632,8 @@ alat.gui.classic.Manager = function(block,parent_tag_id) {
 	this.on_key_down = function(event) {
 		//var o = event.target.parent_object;	
 		var b = alat.manager.current_block();
-		// call ON KEY DOWN event handler
-		// If false then doesnt handle keys bellow
-		var retval = b.call_event(alat.const.EVENT_ON_KEY_DOWN,null,event.keyCode,event);
+        var mod = b.key_handler.calc_ascm_code(event.altKey,event.shiftKey,event.ctrlKey,event.metaKey);
+        var t = b.get_key_event(event.keyCode,mod);
 		if (event.keyCode==9) {
             //event.shiftKey
             //event.ctrlKey
@@ -1634,47 +1650,41 @@ alat.gui.classic.Manager = function(block,parent_tag_id) {
 			alat.gui.classic.preventEventDefault(event);
 			return false
 		}
-		if (retval!=false) {
-			if (event.keyCode==40) {
-				b.goto_row(b.buffer.rowid,+1); 
-				alat.gui.classic.disabledEventPropagation(event);
-			} 
-			if (event.keyCode==38) {
-                b.goto_row(b.buffer.rowid,-1); 
-				alat.gui.classic.disabledEventPropagation(event);
-			} 
-			if (event.keyCode==33) {
-				b.goto_row_force(b.buffer.rowid,-b.gui_manager.page_size); 
-				alat.gui.classic.disabledEventPropagation(event);
-			} 
-			if (event.keyCode==34) {
-				b.goto_row_force(b.buffer.rowid,+b.gui_manager.page_size); 
-				alat.gui.classic.disabledEventPropagation(event);
-			}
-       		if (event.keyCode==114) {   
-                b.delete_row();
-				alat.gui.classic.disabledEventPropagation(event);
-                alat.gui.classic.preventEventDefault(event);
-                return false
-            }
-            if (event.keyCode==115) {
-                b.insert_row();
-				alat.gui.classic.disabledEventPropagation(event);
-                alat.gui.classic.preventEventDefault(event);
-                return false
-            }		
-            if (event.keyCode==27 && b.parent) {
-                b.close_block();
-                alat.gui.classic.disabledEventPropagation(event);
-                alat.gui.classic.preventEventDefault(event);
-                return false
-            }       
-			alat.gui.classic.disabledEventPropagation(event);
-		} else {
-			alat.gui.classic.disabledEventPropagation(event);
-			alat.gui.classic.preventEventDefault(event);
-			return false
-		}
+        if (event.keyCode==40) {
+            b.goto_row(b.buffer.rowid,+1); 
+            alat.gui.classic.disabledEventPropagation(event);
+        } 
+        if (event.keyCode==38) {
+            b.goto_row(b.buffer.rowid,-1); 
+            alat.gui.classic.disabledEventPropagation(event);
+        } 
+        if (event.keyCode==33) {
+            b.goto_row_force(b.buffer.rowid,-b.gui_manager.page_size); 
+            alat.gui.classic.disabledEventPropagation(event);
+        } 
+        if (event.keyCode==34) {
+            b.goto_row_force(b.buffer.rowid,+b.gui_manager.page_size); 
+            alat.gui.classic.disabledEventPropagation(event);
+        }
+        if (t == alat.const.KEY_HANDLER_TARGET_DELETE_ROW) {   
+            b.delete_row();
+            alat.gui.classic.disabledEventPropagation(event);
+            alat.gui.classic.preventEventDefault(event);
+            return false
+        }
+        if (t == alat.const.KEY_HANDLER_TARGET_INSERT_ROW) {
+            b.insert_row();
+            alat.gui.classic.disabledEventPropagation(event);
+            alat.gui.classic.preventEventDefault(event);
+            return false
+        }		
+        if (event.keyCode==27 && b.parent) {
+            b.close_block();
+            alat.gui.classic.disabledEventPropagation(event);
+            alat.gui.classic.preventEventDefault(event);
+            return false
+        }       
+        alat.gui.classic.disabledEventPropagation(event);
 	}
     // Function add: add child tag to apropriate tag
     this.add = function(tag_obj) {

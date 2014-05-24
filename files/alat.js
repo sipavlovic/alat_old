@@ -16,6 +16,7 @@ alat.const = new Object();
 alat.const.CLASS_FIELD = 'FIELD';
 alat.const.CLASS_ROW = 'ROW';
 alat.const.CLASS_BUFFER = 'BUFFER';
+alat.const.CLASS_KEY_HANDLER = 'KEY_HANDLER';
 alat.const.CLASS_BLOCK = 'BLOCK';     
 alat.const.CLASS_EVENTDATA = 'EVENTDATA';
 alat.const.CLASS_EVENT = 'EVENT';
@@ -36,15 +37,11 @@ alat.const.ROWSTATUS_DELETE = 'DELETE';
 alat.const.ROWSTATUS_INSERT = 'INSERT';
 alat.const.ROWSTATUS_UPDATE = 'UPDATE';
 // Event Names
-// -SETGET-
-//alat.const.EVENT_SET = 'SET';
-//alat.const.EVENT_GET = 'GET';
 alat.const.EVENT_CHANGE = 'CHANGE';
 alat.const.EVENT_ACTION = 'ACTION';
 alat.const.EVENT_ROW_BEFORE = 'ROW_BEFORE';
 alat.const.EVENT_ROW_AFTER = 'ROW_AFTER';
 alat.const.EVENT_REFRESH_GUI = 'REFRESH_GUI';
-alat.const.EVENT_ON_KEY_DOWN = 'ON_KEY_DOWN';
 alat.const.EVENT_BLOCK_BEFORE = 'BLOCK_BEFORE';
 alat.const.EVENT_BLOCK_AFTER = 'BLOCK_AFTER';
 // Sub-CallBlock Events
@@ -63,7 +60,10 @@ alat.const.EVENT_STAGE_TYPE_PUT = 'PUT';
 alat.const.EVENT_STAGE_TYPE_SET = 'SET';
 alat.const.EVENT_STAGE_TYPE_GET = 'GET';
 alat.const.EVENT_STAGE_TYPE_CLOSE_BLOCK = 'CLOSE_BLOCK';
-
+// Keyboard constants
+alat.const.KEY_HANDLER_TARGET_INSERT_ROW = "INSERT_ROW";
+alat.const.KEY_HANDLER_TARGET_DELETE_ROW = "DELETE_ROW";
+alat.const.KEY_HANDLER_TARGET_ACTION = "ACTION";
 
 // -------
 // Library
@@ -917,9 +917,6 @@ alat.RowAfterEvent = function(block,callback) {
 alat.RefreshGUIEvent = function(block,callback) { 
 	alat.Event.call(this,block,callback,alat.const.EVENT_REFRESH_GUI,null);
 }
-alat.OnKeyDownEvent = function(block,callback) { 
-	alat.Event.call(this,block,callback,alat.const.EVENT_ON_KEY_DOWN,null);
-}
 
 
 // ------------------
@@ -1066,10 +1063,6 @@ alat.EventManager = function(block) {
             if (type==alat.const.EVENT_ACTION) {
                 data.datadict = arg1;
             }			
-			if (type==alat.const.EVENT_ON_KEY_DOWN) {
-				data.key = arg1;
-				data.jsevent = arg2;
-			}
 			// if event is ROW_AFTER
             if (type==alat.const.EVENT_ROW_AFTER) {
 				// if rowid is null return true
@@ -1520,6 +1513,50 @@ alat.EventManager = function(block) {
 }
 
 
+// ----------------
+// Class KeyHandler
+// ----------------
+alat.KeyHandler = function(parent_class) {
+    // generic alat object inheritance
+    alat.AlatObject.call(this,alat.const.CLASS_KEY_HANDLER);
+    // parent
+    this.parent = parent_class;
+    // keydict [keycode,mod] = target;
+    this.keydict = {};
+    // function calc_ascm_code: calc code from alt+shift+ctrl+meta combination
+    this.calc_ascm_code = function(alt,shift,ctrl,meta) {
+        var r = "";
+        if (alt) r += 'a';
+        if (shift) r += 's';
+        if (ctrl) r += 'c';
+        if (meta) r += 'm';
+        return r;
+    }
+    // function calc_key_mod: calculate key mod
+    this.calc_key_mod = function(mod) {
+        var s = alat.lib.nvl(mod,"").toLowerCase();
+        var alt = s.indexOf('a') != -1;
+        var shift = s.indexOf('s') != -1;
+        var ctrl = s.indexOf('c') != -1;
+        var meta = s.indexOf('m') != -1;
+        return this.calc_ascm_code(alt,shift,ctrl,meta);
+    }
+    // function set_key_event: sets key event for keycode + mod string
+    this.set_key_event = function(keycode,mod,target) {
+        var m = this.calc_key_mod(mod);
+        if (target!=null) {
+            this.keydict[[keycode,m]] = target;
+        } else {
+            delete this.keydict[[keycode,m]];
+        }            
+    }
+    // function get_key_event
+    this.get_key_event = function(keycode,mod) {
+        var m = this.calc_key_mod(mod);
+        return this.keydict[[keycode,m]];
+    }
+}
+
 // -----------
 // Class Block
 // -----------
@@ -1530,6 +1567,8 @@ alat.Block = function(paramdict,callback) {
     this.buffer = new alat.Buffer(this);
     // create event manager
     this.event_manager = new alat.EventManager(this);
+    // create key KeyHandler
+    this.key_handler = new alat.KeyHandler(this);
     // private block variable (for expression evaluation)
     var block = this;
 	// parent block property (caller)
@@ -1544,6 +1583,19 @@ alat.Block = function(paramdict,callback) {
 	this.allow_delete = true;
 	// gui manager property
 	this.gui_manager = null;
+    // function set_key_event
+    this.set_key_event = function(keycode,mod,target) {
+        this.key_handler.set_key_event(keycode,mod,target);
+    }
+    // function get_key_event
+    this.get_key_event = function(keycode,mod) {
+        var t = this.key_handler.get_key_event(keycode,mod);
+        if (t == null) {
+            // if no handler get from manager object
+            t = alat.manager.get_key_event(keycode,mod);
+        }
+        return t;
+    }
     // function eval: evaluation of string expression
     this.eval = function(expr_string) {
         return eval(expr_string);
@@ -1784,11 +1836,21 @@ alat.Manager = function() {
     this.calc_mode = false; 
     // stack of block objects    
     this.block_stack = []; 
+    // create key KeyHandler
+    this.key_handler = new alat.KeyHandler(this);
     // function new_id: html tag id construction
     this.new_id = function() { 
     	var id = 'id'+this.id_counter;
     	this.id_counter = this.id_counter + 1;
     	return(id);
+    }
+    // function set_key_event
+    this.set_key_event = function(keycode,mod,target) {
+        this.key_handler.set_key_event(keycode,mod,target);
+    }
+    // function get_key_event
+    this.get_key_event = function(keycode,mod) {
+        return this.key_handler.get_key_event(keycode,mod);
     }
     // function reopen_block: reopen existing block
     this.reopen_block = function(block_object) {

@@ -520,6 +520,9 @@ alat.local.server.create_db = function() {
 alat.local.server.init_call = function() {
     this.create_db();
     alat.manager.session_id = "test123";
+    alat.manager.set_key_event(115,null,alat.const.KEY_HANDLER_TARGET_INSERT_ROW);
+    alat.manager.set_key_event(114,null,alat.const.KEY_HANDLER_TARGET_DELETE_ROW);
+    alat.manager.set_key_event(13,null,alat.const.KEY_HANDLER_TARGET_ACTION);
     alat.manager.call_block("CustomerBlock");
     tables = alat.local.server.tables;
     tc = alat.local.server.tables.customer;
