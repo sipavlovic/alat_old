@@ -1683,7 +1683,13 @@ alat.gui.classic.Manager = function(block,parent_tag_id) {
             alat.gui.classic.disabledEventPropagation(event);
             alat.gui.classic.preventEventDefault(event);
             return false
-        }       
+        }   
+        if (typeof t == "function") {
+            t(b);
+            alat.gui.classic.disabledEventPropagation(event);
+            alat.gui.classic.preventEventDefault(event);
+            return false
+        }               
         alat.gui.classic.disabledEventPropagation(event);
 	}
     // Function add: add child tag to apropriate tag

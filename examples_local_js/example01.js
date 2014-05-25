@@ -91,6 +91,7 @@ alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
         }
         b.write_row(master_cb);
 	},"DETAILS");
+    this.set_key_event(68,"a",function(b,d) {alert("Alt+D key event demo."); b.action("DETAILS");} );
     this.evt.action_matrix_report = new alat.ActionEvent(this,function(b,d) {
         master_cb = function(b,d) {
             b.call_block("MatrixReportBlock");
