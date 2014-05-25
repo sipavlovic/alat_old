@@ -1,6 +1,5 @@
 TODO LIST:
 
-- Keys and key events revision
 - Better background processing (matrix calc for example)
 - Focus functionality and rowid sync on Matrix GUI element
 - Finish Action functionality on Matrix GUI element
