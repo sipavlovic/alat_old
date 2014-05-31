@@ -5,8 +5,5 @@ TODO LIST:
 - Finish Action functionality on Matrix GUI element
 - Fields nullable/mandatory parameter and null/default value parameter
 - Fields validity function parameter (return undefined if not correct)
-- server2datatype i datatype2server communication
-    - for datetime: ISO 8601
-    - for number: datatype
-- Class rewrite usin prototypes  
+- Class rewrite using prototypes  
 

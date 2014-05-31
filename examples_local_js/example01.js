@@ -154,7 +154,7 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
         if (res.length==1) {
             sum = res[0]['sum_AMOUNT'];
         }
-		return 'block.set("AMOUNT",'+sum+')';
+		return 'block.server_set("AMOUNT",'+sum+')';
 	}
 	if (data["callname"]=="row_after") {
         var t = alat.local.server.tables.customer;
@@ -482,7 +482,7 @@ alat.local.server.create_db = function() {
 	// customers
 	var tc = new alat.local.Table();
 	this.tables.customer = tc;
-	tc.insert_row({CUSTOMER_ID:1,FIRST_NAME:"John",LAST_NAME:"Johnson",CITY:"Toronto",COUNTRY:"Canada",VIP:true});
+	tc.insert_row({CUSTOMER_ID:1,FIRST_NAME:"John",LAST_NAME:"Johnson",CITY:"Toronto",COUNTRY:"Canada",VIP:true,DATE:"2014-02-28"});
 	tc.insert_row({CUSTOMER_ID:2,FIRST_NAME:"Brian",LAST_NAME:"Lewis",CITY:"New York",COUNTRY:"USA"});	
 	tc.insert_row({CUSTOMER_ID:3,FIRST_NAME:"Catherine",LAST_NAME:"Robinson",CITY:"New York",COUNTRY:"USA"});	
 	tc.insert_row({CUSTOMER_ID:4,FIRST_NAME:"Bob",LAST_NAME:"Walker",CITY:"Washington",COUNTRY:"USA"});	

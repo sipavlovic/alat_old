@@ -307,6 +307,11 @@ alat.Float = function(block,name,domain) {
     this.domain.round = alat.lib.nvl(this.domain.round,null); // null = no round
     // function string2datatype: data transformation method - from string to datatype
     this.string2datatype = function(value) {
+        if (typeof value == "number") {
+            if (this.domain.min_value!=null && value<this.domain.min_value) { return undefined };
+            if (this.domain.max_value!=null && value>this.domain.max_value) { return undefined };
+            return alat.lib.round(value, this.domain.round);            
+        }
         if (typeof value == "string") {
             var s = value;
         } else {
@@ -465,8 +470,9 @@ alat.Boolean = function(block,name,domain) {
 alat.Datetime = function(block,name,domain) {
     alat.Field.call(this,block,name,alat.const.DATATYPE_DATETIME,domain);
     this.domain.format = alat.lib.nvl(this.domain.format,'DD.MM.YYYY');
+    this.domain.server_format = alat.lib.nvl(this.domain.server_format,'YYYY-MM-DD');
     // function string2datatype: data transformation method - from string to datatype
-    this.string2datatype = function(value) {
+    this.string2datatype = function(value,format) {
         if (value=="" || value==null) {
             return null;
         }
@@ -474,6 +480,9 @@ alat.Datetime = function(block,name,domain) {
         if (typeof value == "string") {
             var sv = value;
             var sf = this.domain.format;
+            if (typeof format == "string") {
+                sf = format;
+            }
             var day = null;
             var month = null;
             var year = null;
@@ -521,7 +530,7 @@ alat.Datetime = function(block,name,domain) {
         return undefined;
     }
     // function datatype2string: data transformation method - from datatype to string
-    this.datatype2string = function(value) {
+    this.datatype2string = function(value,format) {
         if (value==null) {
             return null;
         }
@@ -532,6 +541,9 @@ alat.Datetime = function(block,name,domain) {
             var year = alat.lib.lpad(alat.lib.str(value.getFullYear()),'0',4);
             var sv = "";
             var sf = this.domain.format;
+            if (typeof format == "string") {
+                sf = format;
+            }
             while (sf.length>0) {
                 sv = sv.trim();
                 sf = sf.trim();
@@ -554,11 +566,18 @@ alat.Datetime = function(block,name,domain) {
             }
             return sv;
         }
-        // DD.MM.YYYY format
         if (typeof value == "string") {
             return value;
         }
         return null;
+    }    
+    // function server2datatype: transform data from server to datatype
+    this.server2datatype = function(value) {
+        return this.string2datatype(value,this.domain.server_format);
+    }    
+    // function datatype2server: transform data from datatype to server
+    this.datatype2server = function(value) {
+        return this.datatype2string(value,this.domain.server_format);
     }    
 }
 
@@ -690,6 +709,18 @@ alat.Buffer = function(block) {
             this.rowid = null;
         }
     }
+    // function server_set: set value from server to buffer storage of field
+    this.server_set = function(name,value) {
+        var f = this.fielddict[name];
+        var v = f.server2datatype(value);
+        if (f.is_variable()) {
+            this.singlevaluedict[name]=v;
+        }
+        else {
+            var x = this.multiposdict[name];
+            this.rowdict[this.rowid].multivaluelist[x]=v;
+        }
+    }    
     // function set: set value to buffer storage of field
     this.set = function(name,value) {
         var f = this.fielddict[name];
@@ -1656,15 +1687,21 @@ alat.Block = function(paramdict,callback) {
     }
     // function server_put
     this.server_put = function(fieldname,newvalue) {
-        return this.put(fieldname,newvalue);
+        var f = this.buffer.fielddict[fieldname];
+        var v = f.server2datatype(newvalue);
+        return this.put(fieldname,v);
     }
     // function server_get
     this.server_get = function(fieldname,newvalue) {
-        return this.get(fieldname,newvalue);
+        var v = this.get(fieldname,newvalue);
+        var f = this.buffer.fielddict[fieldname];
+        return f.datatype2server(v);
     }
     // function server_set
     this.server_set = function(fieldname,newvalue) {
-        return this.set(fieldname,newvalue);
+        var f = this.buffer.fielddict[fieldname];
+        var v = f.server2datatype(newvalue);
+        return this.set(fieldname,v);
     }
 	// function is_current: return true if this block is current false otherwise
 	this.is_current = function() {
@@ -1767,7 +1804,7 @@ alat.Block = function(paramdict,callback) {
 			this.buffer.insert_row();
 			for (var i=0;i<header.length;i++) {
                 if (this.buffer.fielddict[header[i]]) {
-                    this.buffer.set(header[i],data[j][i]);
+                    this.buffer.server_set(header[i],data[j][i]);
                 }
 			}
 		}
@@ -1813,7 +1850,7 @@ alat.Block = function(paramdict,callback) {
 		// if autofields is set to true then all fields are transfered
 		if (autofields==true) {
 			for (var fname in this.buffer.fielddict) {
-				v_paramdict[fname]=this.get(fname);
+				v_paramdict[fname]=this.server_get(fname);
 			}
 		} 
         v_retdict = {callname:callname,block:v_blockdict,param:v_paramdict};

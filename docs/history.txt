@@ -1,5 +1,6 @@
 History (in descending order)
 
+2014-05-31: Functions server2datatype and datatype2server added.
 2014-05-25: Keys and key events revision finished
 2014-05-18: Initial commit to Github.com
 2014-05-12: Added domain parameter for number of decimal places to round for Float datatype and lib.round global function
