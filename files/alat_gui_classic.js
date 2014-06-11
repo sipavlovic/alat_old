@@ -158,7 +158,9 @@ alat.gui.classic.GUIElement = function(parent,className) {
 	// draw this and all children objects
     this.draw_all = function() {
         this.draw();
-        this.obj.style.cssText += this.calc_style();
+        if (this.obj) {
+            this.obj.style.cssText += this.calc_style();
+        }
         for (var i in this.childrenlist) {
             this.childrenlist[i].draw_all();
         }
@@ -169,7 +171,9 @@ alat.gui.classic.GUIElement = function(parent,className) {
 			return;
 		}
         this.refresh();
-        this.obj.style.cssText += this.calc_style();
+        if (this.obj) {
+            this.obj.style.cssText += this.calc_style();
+        }
         for (var i in this.childrenlist) {
             this.childrenlist[i].refresh_all();
         }
@@ -371,6 +375,8 @@ alat.gui.classic.Close_Button = function(parent) {
     alat.gui.classic.GUIElement.call(this,parent,alat.gui.classic.const.CLASS_CLOSE_BUTTON);
     // label property
     this.label = 'X';
+    // hidden property
+    this.hidden = false;
 	// margins property
     this.margin_x=2;
     this.margin_y=4;
@@ -380,40 +386,42 @@ alat.gui.classic.Close_Button = function(parent) {
 	this.clicked = false;
     // draw tag
     this.draw = function() {
+        if (this.hidden == true) {
+            return;
+        }
         this.obj = document.createElement('a');
         this.obj.id = alat.manager.new_id();
         this.obj.parent_object = this;
         this.obj.hidden=false;
-		this.obj.innerHTML = this.label;
-		
+        this.obj.innerHTML = this.label;        
         this.parent.add(this.obj);
         this.set_style("cursor","default");
-		this.add_class(this.obj,this.className);	
-		this.obj.onmousedown = function(event) {
-			var o = event.target.parent_object;
-			o.clicked = true;
-			o.original_x=o.obj.offsetLeft;
-			o.original_y=o.obj.offsetTop;
-			o.obj.style["left"]=o.original_x+"px";
-			o.obj.style["top"]=o.original_y+1+"px";
-		}
-		this.obj.onmouseup = function(event) {
-			var o = event.target.parent_object;
-			if (o.clicked) {
-				o.obj.style["left"]=o.original_x+"px";
-				o.obj.style["top"]=o.original_y+"px";
-				o.clicked = false;
-				o.block.close_block();
-			}
-		}
-		this.obj.onmouseout = function(event) {
-			var o = event.target.parent_object;
-			if (o.clicked) {
-				o.obj.style["left"]=o.original_x+"px";
-				o.obj.style["top"]=o.original_y+"px";
-				o.clicked = false;
-			}
-		}
+        this.add_class(this.obj,this.className);	
+        this.obj.onmousedown = function(event) {
+            var o = event.target.parent_object;
+            o.clicked = true;
+            o.original_x=o.obj.offsetLeft;
+            o.original_y=o.obj.offsetTop;
+            o.obj.style["left"]=o.original_x+"px";
+            o.obj.style["top"]=o.original_y+1+"px";
+        }
+        this.obj.onmouseup = function(event) {
+            var o = event.target.parent_object;
+            if (o.clicked) {
+                o.obj.style["left"]=o.original_x+"px";
+                o.obj.style["top"]=o.original_y+"px";
+                o.clicked = false;
+                o.block.close_block();
+            }
+        }
+        this.obj.onmouseout = function(event) {
+            var o = event.target.parent_object;
+            if (o.clicked) {
+                o.obj.style["left"]=o.original_x+"px";
+                o.obj.style["top"]=o.original_y+"px";
+                o.clicked = false;
+            }
+        }
     }
     // refresh
     this.refresh = function() {

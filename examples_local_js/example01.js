@@ -23,6 +23,7 @@ alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
 	this.gui.panel = new alat.gui.classic.Window(this.gui.manager); 
 		this.gui.panel.pos("30px","30px");
 		this.gui.panel.size("800px","340px");
+        this.gui.panel.close_button.hidden = true;
 	this.gui.table = new alat.gui.classic.Table(this.gui.panel,10);
 		this.gui.table.add_column("CUSTOMER_ID","Customer Id");
 		this.gui.table.add_column("FIRST_NAME","First name");
