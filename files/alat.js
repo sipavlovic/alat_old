@@ -1859,15 +1859,6 @@ alat.Block = function(paramdict,callback) {
             return null;
         }
     }
-	// function call_block
-    this.call_block = function(blockname,callback,data,autofields) {
-		alat.manager.call_block(blockname,this.data_dict("call",data,autofields),callback);
-	}
-	// function call_server
-	this.call_server = function(callback_name,callname,data,autofields) {
-		var retval = alat.manager.call_server(this,callback_name,this.data_dict(callname,data,autofields));
-        return retval;
-	}
     // function data_dict: form data dict for block and server calls
     this.data_dict = function(callname,paramdict,autofields) {
         var v_retdict = {};
@@ -1967,14 +1958,6 @@ alat.Manager = function() {
     // function current_block: returns current block (last in stack), undefined if there is no block
     this.current_block = function() {
         return this.block_stack[this.block_stack.length-1];
-    }
-    // function call: new block call
-    this.call_block = function(blockname,data,callback) { 
-        // fetch new block and start it with parameters in param_list
-    }
-    // function ajax: ajax call to server
-    this.call_server = function(block,callback_name,data) { 
-        // server call - sending variable data and returns javascript code
     }
 }
 // create manager instance within namespace

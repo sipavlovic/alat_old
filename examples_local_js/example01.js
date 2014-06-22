@@ -1,5 +1,5 @@
 alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
-    alat.Block.call(this,paramdict,callback);
+    alat.local.Block.call(this,paramdict,callback);
     // DATA
     this.vars = Object();
     this.vars.customer_id = new alat.Integer(this,"CUSTOMER_ID").column();
@@ -211,7 +211,7 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
 // ==================================================================================================================
 
 alat.local.server.blocks["CustomerDetailBlock"] = function(paramdict,callback) {
-    alat.Block.call(this,paramdict,callback);
+    alat.local.Block.call(this,paramdict,callback);
     // DATA
     this.vars = Object();
     this.vars.customer_id = new alat.Integer(this,"CUSTOMER_ID").column();
@@ -319,7 +319,7 @@ alat.local.server.calls["CustomerDetailBlock"] = function(data) {
 // ==================================================================================================================
 
 alat.local.server.blocks["ConfirmBlock"] = function(paramdict,callback) {
-    alat.Block.call(this,paramdict,callback);
+    alat.local.Block.call(this,paramdict,callback);
 	// GUI
     this.gui = Object();
 	this.gui.manager = new alat.gui.classic.Manager(this);
@@ -349,7 +349,7 @@ alat.local.server.blocks["ConfirmBlock"] = function(paramdict,callback) {
 // ==================================================================================================================
 
 alat.local.server.blocks["MatrixReportBlock"] = function(paramdict,callback) {
-    alat.Block.call(this,paramdict,callback);
+    alat.local.Block.call(this,paramdict,callback);
     // DATA
     this.vars = Object();
     this.vars.country = new alat.String(this,"COUNTRY").column();
@@ -417,7 +417,7 @@ alat.local.server.calls["MatrixReportBlock"] = function(data) {
 // ==================================================================================================================
 
 alat.local.server.blocks["MatrixGeneratedBlock"] = function(paramdict,callback) {
-    alat.Block.call(this,paramdict,callback);
+    alat.local.Block.call(this,paramdict,callback);
     // DATA
     this.vars = Object();
     this.vars.country = new alat.String(this,"COUNTRY").column();

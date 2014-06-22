@@ -90,6 +90,23 @@ alat.local.Server = function() {
 }
 alat.local.server = new alat.local.Server();
 
+// -------------------------------
+// Local Block definition override
+// -------------------------------
+alat.local.Block = function(paramdict,callback) {
+    alat.Block.call(this,paramdict,callback);
+    // call infrastructure
+    // function call_block
+    this.call_block = function(blockname,callback,data,autofields) {
+        alat.manager.call_block(blockname,this.data_dict("call",data,autofields),callback);
+    }
+    // function call_server
+    this.call_server = function(callback_name,callname,data,autofields) {
+        var retval = alat.manager.call_server(this,callback_name,this.data_dict(callname,data,autofields));
+        return retval;
+    }    
+}
+
 
 // ---------------------------------------
 // alat.manager server-specific overriding
