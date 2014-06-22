@@ -113,6 +113,40 @@ alat.lib.round = function(value,places) {
     return (Math.round(value * multiplier) / multiplier);
 }
 
+
+
+// ------------------
+// Function ajax_call
+// ------------------
+alat.ajax_call = function(page,text,async,callback) {
+    var xmlhttp = false;
+    // init
+    if (window.XMLHttpRequest) {
+      // code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp = new XMLHttpRequest();
+    }
+    else {
+      // code for IE6, IE5
+      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    // callback
+    if (typeof callback == "function") {
+        xmlhttp.onreadystatechange=function()
+        {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                callback();
+            }
+        }
+    }
+    // POST call
+    xmlhttp.open("POST",page,async);
+    xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    xmlhttp.send("text="+text);
+}
+
+
+
 // ----------------
 // Class AlatObject
 // Generic stuff
