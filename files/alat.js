@@ -113,12 +113,10 @@ alat.lib.round = function(value,places) {
     return (Math.round(value * multiplier) / multiplier);
 }
 
-
-
 // ------------------
 // Function ajax_call
 // ------------------
-alat.ajax_call = function(page,text,async,callback) {
+alat.lib.ajax_call = function(page,text,callback,async) {
     var xmlhttp = false;
     // init
     if (window.XMLHttpRequest) {
@@ -1922,42 +1920,51 @@ alat.Manager = function() {
     }
     // function open_block: adds block
     this.open_block = function(block_object) {
-		var parent = this.current_block();
+        var parent = this.current_block();
         this.block_stack.push(block_object);
-		block_object.parent = parent;
-		block_object.draw_gui();
-		block_object.refresh_gui();
-		b = block_object; // TEMPORARY FOR TESTING
+        block_object.parent = parent;
+        block_object.draw_gui();
+        block_object.refresh_gui();
+        b = block_object; // TEMPORARY FOR TESTING
     }
-	// function close_block: close current block, and open previous one
-	this.close_block = function() {
-		var block = this.current_block();
-		if (block!=null) {
+    // function close_block: close current block, and open previous one
+    this.close_block = function() {
+        var block = this.current_block();
+        if (block!=null) {
             block.clear_gui();
-			this.block_stack.pop();
-			var next_block = this.current_block();
-			if (next_block!=null) {
-				this.reopen_block(next_block);
-				//next_block.event_manager.refresh_stage();
+            this.block_stack.pop();
+            var next_block = this.current_block();
+            if (next_block!=null) {
+                this.reopen_block(next_block);
+                //next_block.event_manager.refresh_stage();
                 // callback execution of child block on parent block
                 if (block.callback!=null) {
                     var retval = null;
-					/*
+                    /*
                     if (block.callback.className==alat.const.CLASS_EXPRESSION) {
                         retval = next_block.expr(block.callback);
                     } else {
                         retval = block.callback(next_block);
                     }
-					*/
-					retval = block.callback(next_block);
+                    */
+                    retval = block.callback(next_block);
                     next_block.event_manager.continue_event(retval)
                 }
-			}
-		}
-	}
+            }
+        }
+    }
     // function current_block: returns current block (last in stack), undefined if there is no block
     this.current_block = function() {
         return this.block_stack[this.block_stack.length-1];
+    }
+    // function call_server: ajax call to server
+    this.call_server = function(page,data,callback,async,block,autofields) {
+        var datadict = data;
+        if (block && autofields) {
+            datadict = block.data_dict("ajax",data,autofields);
+        }
+        var text = alat.lib.str(datadict);
+        alat.lib.ajax_call(page,text,callback,async);
     }
 }
 // create manager instance within namespace

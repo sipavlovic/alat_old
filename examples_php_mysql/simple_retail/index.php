@@ -9,9 +9,7 @@
     <body>
         <Script Language="JavaScript">
             alat.path = '../../';
+            login_init();
         </script>
-        <?php
-            echo "Simple Retail Demo!";
-        ?>
     </body>
 </html>
