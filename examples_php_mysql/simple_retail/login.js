@@ -21,7 +21,7 @@ Login_Block = function(paramdict,callback) {
     // EVENTS
     this.evt = Object();
     this.evt.action_login = new alat.ActionEvent(this,function (block,data) { 
-            alert("Login!!!"); 
+            alert("Login as "+block.get("USERNAME")); 
     },"LOGIN");
     // INITIAL
     this.draw_gui();

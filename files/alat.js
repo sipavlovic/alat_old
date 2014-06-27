@@ -1416,6 +1416,7 @@ alat.EventManager = function(block) {
     }    
 	// function put: put value directly to buffer without calling change event 
 	this.put = function(fieldname,newvalue) {
+        //alat.lib.log("event_manager.put "+fieldname+","+newvalue);
         var e = this.get_current_level();
         var data = e.data;
         if (e.stage==0) {
@@ -1423,7 +1424,7 @@ alat.EventManager = function(block) {
             data.fieldname = fieldname;
             data.newvalue = newvalue;
             // if rowid is null and fieldname is column then exit
-            if (this.block.buffer.rowid == null && this.buffer.fielddict[data.fieldname].is_column ) {
+            if (this.block.buffer.rowid == null && this.block.buffer.fielddict[data.fieldname].is_column() ) {
                 this.close_level();
                 this.block.refresh_gui();
                 return;
@@ -1442,6 +1443,7 @@ alat.EventManager = function(block) {
     }    
     // function set: set value of field as the result of user input (with events, recalculation etc.)
     this.set = function(fieldname,newvalue) {
+        //alat.lib.log("event_manager.set "+fieldname+","+newvalue);
         var e = this.get_current_level();
         var data = e.data;
         if (e.stage==0) {
@@ -1450,7 +1452,8 @@ alat.EventManager = function(block) {
             data.newvalue = newvalue;
             data.field = this.block.buffer.fielddict[data.fieldname];
             // if rowid is null and fieldname is column then exit
-            if (this.block.buffer.rowid == null && this.block.buffer.fielddict[data.fieldname].is_column ) {
+            if (this.block.buffer.rowid == null && this.block.buffer.fielddict[data.fieldname].is_column() ) {
+                //alat.lib.log("Close");
                 this.close_level();
                 this.block.refresh_gui();
                 return;
