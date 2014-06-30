@@ -1,3 +1,9 @@
+<?php
+    if (sizeof($_POST)>0) {
+        die(json_encode($_POST));
+    }
+?>
+
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -7,6 +13,9 @@
         <script type="text/javascript" src="login.js"></script>
     </head>
     <body>
+        <?php
+            // echo "POST:" . json_encode($_POST) . " SIZE:" . sizeof($_POST);
+        ?>
         <Script Language="JavaScript">
             alat.path = '../../';
             login_init();

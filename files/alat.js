@@ -133,7 +133,7 @@ alat.lib.ajax_call = function(page,text,callback,async) {
         {
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
             {
-                callback();
+                callback(xmlhttp.responseText);
             }
         }
     }
@@ -1961,10 +1961,10 @@ alat.Manager = function() {
         return this.block_stack[this.block_stack.length-1];
     }
     // function call_server: ajax call to server
-    this.call_server = function(page,data,callback,async,block,autofields) {
+    this.call_server = function(page,callname,data,callback,async,block,autofields) {
         var datadict = data;
         if (block && autofields) {
-            datadict = block.data_dict("ajax",data,autofields);
+            datadict = block.data_dict(callname,data,autofields);
         }
         var text = alat.lib.str(datadict);
         alat.lib.ajax_call(page,text,callback,async);
