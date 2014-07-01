@@ -140,7 +140,7 @@ alat.lib.ajax_call = function(page,text,callback,async) {
     // POST call
     xmlhttp.open("POST",page,async);
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-    xmlhttp.send("text="+text);
+    xmlhttp.send("args="+text);
 }
 
 
@@ -1861,7 +1861,7 @@ alat.Block = function(paramdict,callback) {
         }
     }
     // function data_dict: form data dict for block and server calls
-    this.data_dict = function(callname,paramdict,autofields) {
+    this.data_dict = function(command,paramdict,autofields) {
         var v_retdict = {};
         var v_blockdict = {};
         var v_paramdict = alat.lib.nvl(paramdict,{});
@@ -1879,7 +1879,7 @@ alat.Block = function(paramdict,callback) {
 				v_paramdict[fname]=this.server_get(fname);
 			}
 		} 
-        v_retdict = {callname:callname,block:v_blockdict,param:v_paramdict};
+        v_retdict = {command:command,block:v_blockdict,param:v_paramdict};
         return v_retdict;
     }
 }
@@ -1961,10 +1961,10 @@ alat.Manager = function() {
         return this.block_stack[this.block_stack.length-1];
     }
     // function call_server: ajax call to server
-    this.call_server = function(page,callname,data,callback,async,block,autofields) {
+    this.call_server = function(page,command,data,callback,async,block,autofields) {
         var datadict = data;
         if (block && autofields) {
-            datadict = block.data_dict(callname,data,autofields);
+            datadict = block.data_dict(command,data,autofields);
         }
         var text = alat.lib.str(datadict);
         alat.lib.ajax_call(page,text,callback,async);

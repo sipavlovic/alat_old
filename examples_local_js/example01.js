@@ -112,7 +112,7 @@ alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
 }
 alat.local.server.calls["CustomerBlock"] = function(data) {
     // Server-side code
-    if (data["callname"]=="reload")  {
+    if (data["command"]=="reload")  {
         var t = alat.local.server.tables.customer;
 		var td = alat.local.server.tables.customer_detail;        
         var tjson = t.json();
@@ -140,7 +140,7 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
         // return
         return 'block.populate_all('+s2+')';
     }
-	if (data["callname"]=="amount")  {
+	if (data["command"]=="amount")  {
         var sum = 0;
 		var td = alat.local.server.tables.customer_detail;
         var customer_id = data["param"]["CUSTOMER_ID"];
@@ -157,7 +157,7 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
         }
 		return 'block.server_set("AMOUNT",'+sum+')';
 	}
-	if (data["callname"]=="row_after") {
+	if (data["command"]=="row_after") {
         var t = alat.local.server.tables.customer;
         var r = t.filter("row['CUSTOMER_ID']=="+data["param"]["CUSTOMER_ID"]);
         var k = alat.lib.keys(r);
@@ -274,14 +274,14 @@ alat.local.server.blocks["CustomerDetailBlock"] = function(paramdict,callback) {
 }
 alat.local.server.calls["CustomerDetailBlock"] = function(data) {
     // Server-side code
-    if (data["callname"]=="reload") {
+    if (data["command"]=="reload") {
         var t = alat.local.server.tables.customer_detail;
         var customer_id = data["param"]["P_CUSTOMER_ID"];
         var d = t.norm(t.filter("row['CUSTOMER_ID']=="+customer_id));
         var s = alat.lib.str(d);
         return 'block.populate_all('+s+')';
     }
-	if (data["callname"]=="row_after") {
+	if (data["command"]=="row_after") {
         var t = alat.local.server.tables.customer_detail;
         var r = t.filter("row['CUSTOMER_ID']=="+data["param"]["CUSTOMER_ID"]+" && row['ORDER_NO']=="+data["param"]["ORDER_NO"]);
         var k = alat.lib.keys(r);
@@ -388,7 +388,7 @@ alat.local.server.blocks["MatrixReportBlock"] = function(paramdict,callback) {
 }
 alat.local.server.calls["MatrixReportBlock"] = function(data) {
     // Server-side code
-    if (data["callname"]=="reload") {
+    if (data["command"]=="reload") {
         var t = alat.local.server.tables.customer;
         var td = alat.local.server.tables.customer_detail;
         var tjson = t.json();

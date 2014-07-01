@@ -101,8 +101,8 @@ alat.local.Block = function(paramdict,callback) {
         alat.manager.call_block(blockname,this.data_dict("call",data,autofields),callback);
     }
     // function call_server
-    this.call_server = function(callback_name,callname,data,autofields) {
-        var retval = alat.manager.call_server(this,callback_name,this.data_dict(callname,data,autofields));
+    this.call_server = function(callback_name,command,data,autofields) {
+        var retval = alat.manager.call_server(this,callback_name,this.data_dict(command,data,autofields));
         return retval;
     }    
 }
