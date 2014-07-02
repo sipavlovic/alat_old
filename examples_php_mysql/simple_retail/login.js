@@ -17,13 +17,15 @@ Login_Block = function(paramdict,callback) {
     this.gui.e1 = new alat.gui.classic.Edit(this.gui.panel,"USERNAME"); this.gui.e1.gpos(p2,1);
     this.gui.l2 = new alat.gui.classic.Label(this.gui.panel,'Password:'); this.gui.l2.gpos(p1,2.2);
     this.gui.e2 = new alat.gui.classic.Edit(this.gui.panel,"PASSWORD"); this.gui.e2.gpos(p2,2);
+        this.gui.e2.password = true;
     this.gui.but1 = new alat.gui.classic.Button(this.gui.panel,"Login","LOGIN"); this.gui.but1.gpos(19,4);
     // EVENTS
     this.evt = Object();
     this.evt.action_login = new alat.ActionEvent(this,function (block,data) { 
             //alert("Login as "+block.get("USERNAME")); 
             var cb = function(response) { 
-                    alert("Ajax call response:"+response); 
+                //alert(response);
+                block.eval(response);
             }
             //alat.manager.call_server("index.php","test_call",{"customdata":100},cb,false,block,true)
             alat.manager.call_server("index.php","check_login",null,cb,false,block,true)

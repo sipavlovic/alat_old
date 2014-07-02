@@ -752,9 +752,9 @@ alat.gui.classic.Table = function(parent,page_size) {
 
 
 
-// -----------
+// ------------
 // Class Matrix
-// -----------
+// ------------
 alat.gui.classic.Matrix = function(parent,x_column_list,y_column_list,value_column) {
     // GUIElement class inheritance
     alat.gui.classic.GUIElement.call(this,parent,alat.gui.classic.const.CLASS_MATRIX);
@@ -1219,6 +1219,8 @@ alat.gui.classic.Edit = function(parent,fieldname) {
     alat.gui.classic.GUIElement.call(this,parent,alat.gui.classic.const.CLASS_EDIT);
 	// fieldname property
     this.fieldname = fieldname;
+    // password property
+    this.password = false;
 	// on key down event handler
 	this.on_key_down = function(event) {
         var o = event.target.parent_object;
@@ -1247,6 +1249,9 @@ alat.gui.classic.Edit = function(parent,fieldname) {
         this.obj.id = alat.manager.new_id();
         this.obj.parent_object = this;
         this.obj.hidden=false;
+        if (this.password) {
+            this.obj.type = "password";
+        }
 		this.add_class(this.obj,this.className);
 		this.add_class(this.obj,"shadow");
         //this.parent.obj.appendChild(this.obj);

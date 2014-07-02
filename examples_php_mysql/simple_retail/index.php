@@ -1,4 +1,5 @@
 <?php
+    session_start();
     if (sizeof($_POST)>0) {
         //die(json_encode($_POST));
         $ajax_args = json_decode($_POST["args"],true);
@@ -18,13 +19,16 @@
             $rowcount = $stm->rowCount();            
             require_once("mysql_close.php");
             if ($rowcount>0) {
-                die("Login success!");
+                //header('location:main.php');
+                //die("Login success!");
+                $_SESSION['username'] = $username;
+                die("window.location='main.php'");
             } else {
-                die("Login fail!");
+                die("alert('Invalid username or password!');");
             }
             
         } else {
-            die("Unknown callname");
+            die("Unknown command");
         }
     }
 ?>
@@ -38,9 +42,6 @@
         <script type="text/javascript" src="login.js"></script>
     </head>
     <body>
-        <?php
-            // echo "POST:" . json_encode($_POST) . " SIZE:" . sizeof($_POST);
-        ?>
         <Script Language="JavaScript">
             alat.path = '../../';
             login_init();
