@@ -1,4 +1,5 @@
 <?php 
+    // login check
     session_start();
     if (!isset($_SESSION['username'])) {
         header('location:index.php');
@@ -17,6 +18,9 @@
     <body>
         <Script Language="JavaScript">
             alat.path = '../../';
+            alat.username = <?php
+                echo "'" . $_SESSION['username'] . "'";
+            ?>;
             main_init();
         </script>
     </body>

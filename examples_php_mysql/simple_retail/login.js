@@ -22,13 +22,7 @@ Login_Block = function(paramdict,callback) {
     // EVENTS
     this.evt = Object();
     this.evt.action_login = new alat.ActionEvent(this,function (block,data) { 
-            //alert("Login as "+block.get("USERNAME")); 
-            var cb = function(response) { 
-                //alert(response);
-                block.eval(response);
-            }
-            //alat.manager.call_server("index.php","test_call",{"customdata":100},cb,false,block,true)
-            alat.manager.call_server("index.php","check_login",null,cb,false,block,true)
+            alat.manager.call_server("index.php","check_login",null,block.eval,false,block,true)
     },"LOGIN");
     // INITIAL
     this.draw_gui();
