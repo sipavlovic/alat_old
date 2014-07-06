@@ -195,11 +195,13 @@ alat.Field = function(block,name,datatype,domain) {
     }    
     // function server2datatype: transform data from server to datatype
     this.server2datatype = function(value) {
-        return alat.lib.nvl(value,"");
+        //return alat.lib.nvl(value,"");
+        return this.string2datatype(value);
     }    
     // function datatype2server: transform data from datatype to server
     this.datatype2server = function(value) {
-        return alat.lib.nvl(value,"");
+        //return alat.lib.nvl(value,"");
+        return this.datatype2string(value);
     }    
     // function is_valid_so_far: is value valid so far
     // used for dataentry interactive control
@@ -745,6 +747,8 @@ alat.Buffer = function(block) {
     this.server_set = function(name,value) {
         var f = this.fielddict[name];
         var v = f.server2datatype(value);
+        delete this.changedict[name];
+        delete this.recalcdict[name];
         if (f.is_variable()) {
             this.singlevaluedict[name]=v;
         }
@@ -1664,7 +1668,14 @@ alat.Block = function(paramdict,callback) {
     }
     // function eval: evaluation of string expression
     this.eval = function(expr_string) {
-        return eval(expr_string);
+        try {
+            return eval(expr_string); 
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                alert(e.message+" Original:"+expr_string);
+            }
+        }        
+        //return eval(expr_string);
     }
     // function expr: if object is function then evaluate object else return object itself
     this.expr = function (object,additional_data) {
@@ -1744,6 +1755,11 @@ alat.Block = function(paramdict,callback) {
 	}
 	// function is_changed: return true if there is any change in variables (buffer changedict)
 	this.is_changed = function() {
+        /*
+        alat.lib.log(alat.lib.str("Changed:"+this.buffer.changedict)+" multi:"
+            +alat.lib.str(this.buffer.rowdict[this.buffer.rowid].multivaluelist)
+            +" single:"+alat.lib.str(this.buffer.singlevaluedict));
+        */    
         return alat.lib.keys(this.buffer.changedict).length>0;
     }
 	// function call_event: execute event code
@@ -1846,12 +1862,26 @@ alat.Block = function(paramdict,callback) {
 		this.refresh_gui();
 	}
 	// function populate_row: populate current row with fetched data
+	/*
 	this.populate_row = function(rowdict) {
 		for (var name in rowdict) {
 			this.buffer.set(name,rowdict[name]);
 		}
 		this.refresh_gui();
-	}	
+	}
+	*/
+    this.populate_row = function(datadict) {
+        alat.lib.log("Populate_row:"+alat.lib.str(datadict));
+        var header = datadict["header"];
+        var data = datadict["data"];
+        for (var i=0;i<header.length;i++) {
+            if (this.buffer.fielddict[header[i]]) {
+                alat.lib.log(" - "+header[i]+"->"+data[0][i]);
+                this.buffer.server_set(header[i],data[0][i]);
+            }
+        }
+        this.refresh_gui();
+    }    
 	// function get_row_status
     this.get_row_status = function() {
         if (this.buffer.rowid!=null) {
