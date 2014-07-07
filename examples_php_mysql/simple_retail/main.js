@@ -15,6 +15,8 @@ Main_Block = function(paramdict,callback) {
         this.gui.but2.gpos(x,y+1);this.gui.but2.gsize(w,h);
     this.gui.but3 = new alat.gui.classic.Button(this.gui.panel,"Stores","ACTION_STORES"); 
         this.gui.but3.gpos(x,y+2);this.gui.but3.gsize(w,h);
+    this.gui.but_logout = new alat.gui.classic.Button(this.gui.panel,"Logout","ACTION_LOGOUT"); 
+        this.gui.but_logout.gpos(x,y+4);this.gui.but_logout.gsize(w,h);
         
     // Panel2    
     this.gui.panel2 = new alat.gui.classic.Window(this.gui.manager); 
@@ -37,6 +39,9 @@ Main_Block = function(paramdict,callback) {
     this.evt.action_users = new alat.ActionEvent(this,function(block,data) {
             alat.manager.call_server("users.php","init",null,block.eval,false,block,true);        
     },"ACTION_USERS");    
+    this.evt.action_users = new alat.ActionEvent(this,function(block,data) {
+            alat.manager.call_server("main.php","logout",null,block.eval,false,block,true);        
+    },"ACTION_LOGOUT");    
     // INITIAL
     this.draw_gui();
 } 

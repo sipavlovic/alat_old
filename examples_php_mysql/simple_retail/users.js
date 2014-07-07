@@ -25,7 +25,7 @@ Users_Block = function(paramdict,callback) {
     this.evt.row_after = new alat.RowAfterEvent(this,function(block,data) {
             if (block.get_row_status()==alat.const.ROWSTATUS_UPDATE) {
                 if (block.is_changed()) {
-                        alat.manager.call_server("users.php","row_after",null,block.eval,false,block,true);
+                        alat.manager.call_server("users.php","row_after",{test1:20,test2:null},block.eval,false,block,true);
                 }
             } else {
                 alat.manager.call_server("users.php","row_after",null,block.eval,false,block,true);

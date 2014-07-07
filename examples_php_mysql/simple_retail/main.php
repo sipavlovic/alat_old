@@ -4,6 +4,18 @@
     if (!isset($_SESSION['username'])) {
         header('location:index.php');
     }
+    
+    // If post args
+    if (sizeof($_POST)>0) {
+        $ajax_args = json_decode($_POST["args"],true);
+        
+        // Command: init
+        if ($ajax_args["command"]=="logout") {
+            unset($_SESSION['username']);
+            die("window.location='index.php'");
+        }
+        
+    }    
 ?>
 
  

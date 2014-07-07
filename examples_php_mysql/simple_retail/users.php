@@ -12,7 +12,7 @@
         $stm->execute();  
         $data = $stm->fetchAll(PDO::FETCH_NUM);
         $header = array("ID","USERNAME","PASSWORD");
-        $result= array("header"=>$header,"data"=>$data);       
+        $result= array("header"=>$header,"data"=>$data,"test"=>100);       
         return $result;
     }
 
@@ -43,6 +43,8 @@
         // Command: row_after
         elseif($ajax_args["command"]=="row_after") {
             // die("alert('Status: " . $ajax_args["block"]["status"] . "');");
+            // die("alert('Args: ".json_encode($ajax_args)."');");
+            // die("alert('Args: ".json_encode($_POST)."');");
             if ($ajax_args["block"]["status"]=="UPDATE") {
                 require_once("mysql_open.php");    
                 $id = $ajax_args["param"]["ID"];

@@ -70,8 +70,11 @@ alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
     this.evt.row_after = new alat.RowAfterEvent(this,function(b,d) {
 		if (b.get_row_status()!=alat.const.ROWSTATUS_UPDATE) {
 			var cb = function(b,d) {
+                //alert(b.get("RETURN_VALUE"));
 				if (b.get("RETURN_VALUE")=="YES") {
-                    return b.call_server("CustomerBlock","row_after",{},true);
+                    var ret = b.call_server("CustomerBlock","row_after",{},true);
+                    //alert(ret);
+                    return ret;
                 }
                 return false;
 			}
@@ -158,6 +161,10 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
 		return 'block.server_set("AMOUNT",'+sum+')';
 	}
 	if (data["command"]=="row_after") {
+        if (data["param"]["CUSTOMER_ID"]==null) {
+            alert ("Customer ID must not be empty!");
+            return 'false';
+        }
         var t = alat.local.server.tables.customer;
         var r = t.filter("row['CUSTOMER_ID']=="+data["param"]["CUSTOMER_ID"]);
         var k = alat.lib.keys(r);
@@ -282,6 +289,10 @@ alat.local.server.calls["CustomerDetailBlock"] = function(data) {
         return 'block.populate_all('+s+')';
     }
 	if (data["command"]=="row_after") {
+        if (data["param"]["ORDER_NO"]==null) {
+            alert ("Order No must not be empty!");
+            return 'false';
+        }
         var t = alat.local.server.tables.customer_detail;
         var r = t.filter("row['CUSTOMER_ID']=="+data["param"]["CUSTOMER_ID"]+" && row['ORDER_NO']=="+data["param"]["ORDER_NO"]);
         var k = alat.lib.keys(r);

@@ -197,11 +197,13 @@ alat.Field = function(block,name,datatype,domain) {
     this.server2datatype = function(value) {
         //return alat.lib.nvl(value,"");
         return this.string2datatype(value);
+        //return value;
     }    
     // function datatype2server: transform data from datatype to server
     this.datatype2server = function(value) {
         //return alat.lib.nvl(value,"");
-        return this.datatype2string(value);
+        //return this.datatype2string(value);
+        return value;
     }    
     // function is_valid_so_far: is value valid so far
     // used for dataentry interactive control
@@ -1756,7 +1758,7 @@ alat.Block = function(paramdict,callback) {
 	// function is_changed: return true if there is any change in variables (buffer changedict)
 	this.is_changed = function() {
         /*
-        alat.lib.log(alat.lib.str("Changed:"+this.buffer.changedict)+" multi:"
+        alat.lib.log("Changed:"+alat.lib.str(this.buffer.changedict)+" multi:"
             +alat.lib.str(this.buffer.rowdict[this.buffer.rowid].multivaluelist)
             +" single:"+alat.lib.str(this.buffer.singlevaluedict));
         */    
@@ -1871,12 +1873,12 @@ alat.Block = function(paramdict,callback) {
 	}
 	*/
     this.populate_row = function(datadict) {
-        alat.lib.log("Populate_row:"+alat.lib.str(datadict));
+        //alat.lib.log("Populate_row:"+alat.lib.str(datadict));
         var header = datadict["header"];
         var data = datadict["data"];
         for (var i=0;i<header.length;i++) {
             if (this.buffer.fielddict[header[i]]) {
-                alat.lib.log(" - "+header[i]+"->"+data[0][i]);
+                //alat.lib.log(" - "+header[i]+"->"+data[0][i]);
                 this.buffer.server_set(header[i],data[0][i]);
             }
         }
