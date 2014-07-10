@@ -9,12 +9,12 @@ Main_Block = function(paramdict,callback) {
         this.gui.panel.size("235px","200px");
         this.gui.panel.close_button.hidden = true;
     var x=1; var y=0.5; var w=20; var h=0.7;
-    this.gui.but1 = new alat.gui.classic.Button(this.gui.panel,"Users","ACTION_USERS"); 
-        this.gui.but1.gpos(x,y);this.gui.but1.gsize(w,h);
-    this.gui.but2 = new alat.gui.classic.Button(this.gui.panel,"Products","ACTION_PRODUCTS"); 
-        this.gui.but2.gpos(x,y+1);this.gui.but2.gsize(w,h);
-    this.gui.but3 = new alat.gui.classic.Button(this.gui.panel,"Stores","ACTION_STORES"); 
-        this.gui.but3.gpos(x,y+2);this.gui.but3.gsize(w,h);
+    this.gui.but_users = new alat.gui.classic.Button(this.gui.panel,"Users","ACTION_USERS"); 
+        this.gui.but_users.gpos(x,y);this.gui.but_users.gsize(w,h);
+    this.gui.but_accounts = new alat.gui.classic.Button(this.gui.panel,"Chart of Accounts","ACTION_ACCOUNTS"); 
+        this.gui.but_accounts.gpos(x,y+1);this.gui.but_accounts.gsize(w,h);
+    this.gui.but_trans = new alat.gui.classic.Button(this.gui.panel,"Transaction Journal","ACTION_TRANS"); 
+        this.gui.but_trans.gpos(x,y+2);this.gui.but_trans.gsize(w,h);
     this.gui.but_logout = new alat.gui.classic.Button(this.gui.panel,"Logout","ACTION_LOGOUT"); 
         this.gui.but_logout.gpos(x,y+4);this.gui.but_logout.gsize(w,h);
         

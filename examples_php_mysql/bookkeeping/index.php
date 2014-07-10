@@ -11,7 +11,7 @@
             $username = stripslashes($ajax_args["param"]["USERNAME"]);
             $password = stripslashes($ajax_args["param"]["PASSWORD"]);            
             require_once("mysql_open.php");    
-            $sql = "SELECT username FROM users WHERE username = :username AND password = :password"; 
+            $sql = "SELECT username FROM user WHERE username = :username AND password = :password"; 
             $stm = $conn->prepare($sql);
             $stm->bindValue(':username', $username, PDO::PARAM_STR);
             $stm->bindValue(':password', $password, PDO::PARAM_STR);
