@@ -82,6 +82,22 @@ insert into account (code,name,account_type_id,parent_account_id) values (4000,'
 insert into account (code,name,account_type_id,parent_account_id) values (5000,'Expense Accounts',5,null);
 
 
+-- View V_ACCOUNT
+create view v_account as 
+select
+    a.id,
+    a.code,
+    a.name,
+    a.account_type_id,
+    t.typename,
+    t.debit_factor,
+    t.credit_factor,
+    a.parent_account_id
+from account a
+left outer join account_type t on a.account_type_id = t.id; 
+
+
+
 -- Table TRANSACTION_STATUS
 create table transaction_status (
     id int(10) not null,

@@ -113,11 +113,12 @@ alat.lib.round = function(value,places) {
     return (Math.round(value * multiplier) / multiplier);
 }
 
+
 // ------------------
 // Function ajax_call
 // ------------------
-alat.lib.ajax_call = function(page,text,callback,async) {
-    var xmlhttp = false;
+alat.ajax_call= function(page,text,callback,async,block) {
+    var xmlhttp = Object();
     // init
     if (window.XMLHttpRequest) {
       // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -127,13 +128,16 @@ alat.lib.ajax_call = function(page,text,callback,async) {
       // code for IE6, IE5
       xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
+    xmlhttp.error = false;
+    xmlhttp.error_message = '';
+    xmlhttp.block = block;
     // callback
     if (typeof callback == "function") {
         xmlhttp.onreadystatechange=function()
         {
         if (xmlhttp.readyState==4 && xmlhttp.status==200)
             {
-                callback(xmlhttp.responseText);
+                callback(xmlhttp);
             }
         }
     }
@@ -141,6 +145,7 @@ alat.lib.ajax_call = function(page,text,callback,async) {
     xmlhttp.open("POST",page,async);
     xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     xmlhttp.send("args="+text);
+    return xmlhttp;
 }
 
 
@@ -1670,14 +1675,7 @@ alat.Block = function(paramdict,callback) {
     }
     // function eval: evaluation of string expression
     this.eval = function(expr_string) {
-        try {
-            return eval(expr_string); 
-        } catch (e) {
-            if (e instanceof SyntaxError) {
-                alert(e.message+" Original:"+expr_string);
-            }
-        }        
-        //return eval(expr_string);
+        return eval(expr_string);
     }
     // function expr: if object is function then evaluate object else return object itself
     this.expr = function (object,additional_data) {
@@ -1848,19 +1846,21 @@ alat.Block = function(paramdict,callback) {
 	// function populate_all: refresh data feched from database
 	this.populate_all = function(datadict) {
 		this.buffer.rowdict = {};
-		this.rowidlist = [];
+		this.buffer.rowidlist = [];
 		this.buffer.rowid = null;
 		this.buffer.rowid_counter = 0;
-		var header = datadict["header"];
-		var data = datadict["data"];
-		for (var j=0;j<data.length;j++) {
-			this.buffer.insert_row();
-			for (var i=0;i<header.length;i++) {
-                if (this.buffer.fielddict[header[i]]) {
-                    this.buffer.server_set(header[i],data[j][i]);
+        if (datadict!=null) { 
+            var header = datadict["header"];
+            var data = datadict["data"];
+            for (var j=0;j<data.length;j++) {
+                this.buffer.insert_row();
+                for (var i=0;i<header.length;i++) {
+                    if (this.buffer.fielddict[header[i]]) {
+                        this.buffer.server_set(header[i],data[j][i]);
+                    }
                 }
-			}
-		}
+            }
+        }
 		this.refresh_gui();
 	}
 	// function populate_row: populate current row with fetched data
@@ -1913,6 +1913,19 @@ alat.Block = function(paramdict,callback) {
 		} 
         v_retdict = {command:command,block:v_blockdict,param:v_paramdict};
         return v_retdict;
+    }
+    // function ajax_eval: evaluation of ajax response string with error handling
+    this.ajax_eval = function(ajax_xmlhttp) {
+        try {
+            var ret = eval(ajax_xmlhttp.responseText);
+            return ret;
+        } catch (e) {
+            if (e instanceof SyntaxError) {
+                ajax_xmlhttp.error = true;
+                ajax_xmlhttp.error_message = e.message;
+                alert(e.message+" Original:"+ajax_xmlhttp.responseText);
+            }
+        }        
     }
 }
 
@@ -1999,7 +2012,7 @@ alat.Manager = function() {
             datadict = block.data_dict(command,data,autofields);
         }
         var text = alat.lib.str(datadict);
-        alat.lib.ajax_call(page,text,callback,async);
+        return alat.ajax_call(page,text,callback,async,block);
     }
 }
 // create manager instance within namespace

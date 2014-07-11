@@ -37,10 +37,13 @@ Main_Block = function(paramdict,callback) {
     // EVENTS
     this.evt = Object();
     this.evt.action_users = new alat.ActionEvent(this,function(block,data) {
-            alat.manager.call_server("users.php","init",null,block.eval,false,block,true);        
+            alat.manager.call_server("users.php","init",null,block.ajax_eval,false,block,true);        
     },"ACTION_USERS");    
+    this.evt.action_accounts = new alat.ActionEvent(this,function(block,data) {
+            alat.manager.call_server("chart_of_acc.php","init",null,block.ajax_eval,false,block,true);        
+    },"ACTION_ACCOUNTS");    
     this.evt.action_users = new alat.ActionEvent(this,function(block,data) {
-            alat.manager.call_server("main.php","logout",null,block.eval,false,block,true);        
+            alat.manager.call_server("main.php","logout",null,block.ajax_eval,false,block,true);        
     },"ACTION_LOGOUT");    
     // INITIAL
     this.draw_gui();

@@ -25,15 +25,17 @@ Users_Block = function(paramdict,callback) {
     this.evt.row_after = new alat.RowAfterEvent(this,function(block,data) {
             if (block.get_row_status()==alat.const.ROWSTATUS_UPDATE) {
                 if (block.is_changed()) {
-                        alat.manager.call_server("users.php","row_after",{test1:20,test2:null},block.eval,false,block,true);
+                        var ajaxobj = alat.manager.call_server("users.php","row_after",{test1:20,test2:null},block.ajax_eval,false,block,true);
+                        return !ajaxobj.error;
                 }
             } else {
-                alat.manager.call_server("users.php","row_after",null,block.eval,false,block,true);
+                var ajaxobj = alat.manager.call_server("users.php","row_after",null,block.ajax_eval,false,block,true);
+                return !ajaxobj.error;
             }
         });        
     // INITIAL
     this.draw_gui();
-    alat.manager.call_server("users.php","populate",null,this.eval,false,this,true);
+    alat.manager.call_server("users.php","populate",null,this.ajax_eval,false,this,true);
 } 
 
 users_init = function() {

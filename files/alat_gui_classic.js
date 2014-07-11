@@ -610,21 +610,26 @@ alat.gui.classic.Table = function(parent,page_size) {
             r.onclick = function(event) {
                 var r = event.target.parent_object;  
                 var o = event.target; 
-                o.alat_block.goto_row(r.row_rowid); 
-                o.alat_table.current_x = o.alat_x; 
-                o.alat_table.current_y = o.alat_y; 
-                o.alat_block.gui_manager.set_focus(o.alat_table); 
+                o.alat_block.goto_row(r.row_rowid);
+                //alert(r.row_rowid+" ==> "+o.alat_block.buffer.rowid)
+                if (r.row_rowid == o.alat_block.buffer.rowid) {
+                    o.alat_table.current_x = o.alat_x; 
+                    o.alat_table.current_y = o.alat_y; 
+                    o.alat_block.gui_manager.set_focus(o.alat_table); 
+                }
             }
 			// on dbl click event for row
             r.ondblclick = function(event) {
                 var r = event.target.parent_object;  
                 var o = event.target; 
                 o.alat_block.goto_row(r.row_rowid); 
-                o.alat_table.current_x = o.alat_x; 
-                o.alat_table.current_y = o.alat_y; 
-                o.alat_block.gui_manager.set_focus(o.alat_table);
-				// action
-				o.alat_table.run_action(o.alat_table.columnlist[parseInt(o.alat_table.current_x)].fieldname);
+                if (r.row_rowid == o.alat_block.buffer.rowid) {
+                    o.alat_table.current_x = o.alat_x; 
+                    o.alat_table.current_y = o.alat_y; 
+                    o.alat_block.gui_manager.set_focus(o.alat_table);
+                    // action
+                    o.alat_table.run_action(o.alat_table.columnlist[parseInt(o.alat_table.current_x)].fieldname);
+                }    
             }
 		}
 	}
