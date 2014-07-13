@@ -185,8 +185,8 @@ alat.Field = function(block,name,datatype,domain) {
     this.datatype = datatype;
     // fieldtype property
     this.fieldtype = null;
-    // readonly property: can be callback object, true or false
-    this.readonly = false;
+    // readonly property: can be callback object, true or false. If null then default_readonly is used
+    this.readonly = null;
 	// change_flag property: true if should be put to changedict, false otherwise 
 	this.change_flag = false;
     // function string2datatype: data transformation method - from string to datatype
@@ -225,6 +225,9 @@ alat.Field = function(block,name,datatype,domain) {
     }
     // function is_readonly
     this.is_readonly = function() {
+        if (this.readonly == null) {
+            return this.block.expr(this.block.default_readonly);
+        }
         return this.block.expr(this.readonly);
     }
     // init property - Callback object
@@ -1654,10 +1657,12 @@ alat.Block = function(paramdict,callback) {
 	this.paramdict = alat.lib.nvl(paramdict,{});
     // callback parameter
     this.callback = callback;
-	// allow_insert: can be expression
-	this.allow_insert = true;
-	// allow_delete: can be expression
-	this.allow_delete = true;
+	// allow_insert: false by default, can be expression
+	this.allow_insert = false;
+	// allow_delete: false by default, can be expression
+	this.allow_delete = false;
+    // default_readonly: default readonly if not overriden, can be expression
+    this.default_readonly = true;
 	// gui manager property
 	this.gui_manager = null;
     // function set_key_event

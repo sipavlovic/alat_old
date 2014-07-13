@@ -1,5 +1,8 @@
 Users_Block = function(paramdict,callback) {
     alat.Block.call(this,paramdict,callback);
+    this.allow_insert = true;
+    this.allow_delete = true;
+    this.default_readonly = false;
     // DATA
     this.vars = Object();
     this.vars.id = new alat.Integer(this,"ID").column();

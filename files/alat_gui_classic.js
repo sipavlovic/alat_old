@@ -448,16 +448,19 @@ alat.gui.classic.Table = function(parent,page_size) {
     // current_x, current_y - for internal table focus
     this.current_x = 0;
     this.current_y = 0;
+    // default_width: default column width in px
+    this.default_width = "100px";
 	// first to show (row pos in buffer)
     this.first_to_show = 0;
 	// page_size
 	this.page_size = alat.lib.nvl(page_size,1);
 	this.block.gui_manager.page_size = page_size;
 	// function add_column
-	this.add_column = function(fieldname,title) {
+	this.add_column = function(fieldname,title,width) {
 		var col = new Object();
 		col.fieldname = fieldname;
 		col.title = title;
+        col.width = width;
 		this.columnlist.push(col);
 	}
 	// set cell inner html value
@@ -474,14 +477,18 @@ alat.gui.classic.Table = function(parent,page_size) {
     this.showfirst = function(pos) {
         this.first_to_show = alat.lib.nvl(this.block.buffer.get_goal_pos(pos),0);
     }
-	this.new_cell_tag = function(tagname,parenttag) {
+	this.new_cell_tag = function(tagname,parenttag,width) {
 		var tag = document.createElement(tagname);
+        var column_width = this.default_width;
+        if (width != null) {
+            column_width = width;
+        }
 		tag.id = alat.manager.new_id();
 		tag.block = this.block;
 		tag.parent_object = parenttag;
-		tag.style["min-width"] = "100px";
-		tag.style["max-width"] = "100px";
-		tag.style["width"] = "100px";	
+		tag.style["min-width"] = column_width;;
+		tag.style["max-width"] = column_width;;
+		tag.style["width"] = column_width;	
 		tag.style["overflow"] = "hidden";
 		tag.style["white-space"]="nowrap";
 		tag.style["padding"]="0";
@@ -553,9 +560,9 @@ alat.gui.classic.Table = function(parent,page_size) {
         this.obj_table.appendChild(this.obj_header);
 		this.header = [];
 		for (var i in this.columnlist) {
-			var t = this.new_cell_tag('th',this.obj_header);
+            var c = this.columnlist[i];
+            var t = this.new_cell_tag('th',this.obj_header,c.width);
             //t.innerHTML=this.columnlist[i].fieldname;
-			var c = this.columnlist[i];
 			if (c.title==null) {
 				t.innerHTML=c.fieldname
 			} else {
@@ -579,7 +586,7 @@ alat.gui.classic.Table = function(parent,page_size) {
 			this.cell[y]={};
 			this.cell_div[y]={};
             for (var x in this.columnlist) {
-				var t = this.new_cell_tag('td',r);
+				var t = this.new_cell_tag('td',r,this.columnlist[x].width);
                 t.alat_fieldname = this.columnlist[x].fieldname;
                 t.alat_block = this.block;
                 t.alat_table = this;
@@ -587,7 +594,7 @@ alat.gui.classic.Table = function(parent,page_size) {
                 t.alat_y = y;
                 this.cell[y][x]=t;
 				// inner div
-				var d = this.new_cell_tag('input',t);
+				var d = this.new_cell_tag('input',t,this.columnlist[x].width);
 				d.readOnly = true;
                 d.style["border-style"]="none";
                 d.alat_fieldname = this.columnlist[x].fieldname;

@@ -1,5 +1,8 @@
 alat.local.server.blocks["CustomerBlock"] = function(paramdict,callback) {
     alat.local.Block.call(this,paramdict,callback);
+    this.allow_insert = true;
+    this.allow_delete = true;
+    this.default_readonly = false;
     // DATA
     this.vars = Object();
     this.vars.customer_id = new alat.Integer(this,"CUSTOMER_ID").column();
@@ -219,6 +222,9 @@ alat.local.server.calls["CustomerBlock"] = function(data) {
 
 alat.local.server.blocks["CustomerDetailBlock"] = function(paramdict,callback) {
     alat.local.Block.call(this,paramdict,callback);
+    this.allow_insert = true;
+    this.allow_delete = true;
+    this.default_readonly = false;
     // DATA
     this.vars = Object();
     this.vars.customer_id = new alat.Integer(this,"CUSTOMER_ID").column();
@@ -331,6 +337,9 @@ alat.local.server.calls["CustomerDetailBlock"] = function(data) {
 
 alat.local.server.blocks["ConfirmBlock"] = function(paramdict,callback) {
     alat.local.Block.call(this,paramdict,callback);
+    this.allow_insert = true;
+    this.allow_delete = true;
+    this.default_readonly = false;
 	// GUI
     this.gui = Object();
 	this.gui.manager = new alat.gui.classic.Manager(this);
@@ -361,18 +370,15 @@ alat.local.server.blocks["ConfirmBlock"] = function(paramdict,callback) {
 
 alat.local.server.blocks["MatrixReportBlock"] = function(paramdict,callback) {
     alat.local.Block.call(this,paramdict,callback);
+    this.allow_insert = false;
+    this.allow_delete = false;
+    this.default_readonly = true;
     // DATA
     this.vars = Object();
     this.vars.country = new alat.String(this,"COUNTRY").column();
-        this.vars.country.readonly = true;
     this.vars.city = new alat.String(this,"CITY").column();
-        this.vars.city.readonly = true;
     this.vars.order_no = new alat.Integer(this,"ORDER_NO").column();
-        this.vars.order_no.readonly = true;
     this.vars.amount = new alat.Float(this,"AMOUNT").column();
-        this.vars.amount.readonly = true;
-	this.allow_insert = function (block,data) { return false; }
-	this.allow_delete = function (block,data) { return false; }	
     // GUI
     this.gui = Object();
     this.gui.manager = new alat.gui.classic.Manager(this);
@@ -429,6 +435,9 @@ alat.local.server.calls["MatrixReportBlock"] = function(data) {
 
 alat.local.server.blocks["MatrixGeneratedBlock"] = function(paramdict,callback) {
     alat.local.Block.call(this,paramdict,callback);
+    this.allow_insert = false;
+    this.allow_delete = false;
+    this.default_readonly = true;
     // DATA
     this.vars = Object();
     this.vars.country = new alat.String(this,"COUNTRY").column();

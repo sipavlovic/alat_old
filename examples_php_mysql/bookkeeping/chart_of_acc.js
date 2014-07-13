@@ -1,5 +1,8 @@
 Chart_of_Acc_Block = function(paramdict,callback) {
     alat.Block.call(this,paramdict,callback);
+    this.allow_insert = false;
+    this.allow_delete = false;
+    this.default_readonly = true;
     // DATA
     this.vars = Object();
     this.vars.id = new alat.Integer(this,"ID").column();
@@ -17,11 +20,11 @@ Chart_of_Acc_Block = function(paramdict,callback) {
         this.gui.panel.size("430px","290px");
     this.gui.title = new alat.gui.classic.Title(this.gui.panel,'- CHART OF ACCOUNTS -',this.gui.panel); this.gui.title.gpos(13,0);    
     this.gui.table = new alat.gui.classic.Table(this.gui.panel,10); 
-        this.gui.table.add_column("ID","Id");
-        this.gui.table.add_column("CODE","Code");
-        this.gui.table.add_column("NAME","Name");
+        this.gui.table.add_column("ID","Id","50px");
+        this.gui.table.add_column("CODE","Code","50px");
+        this.gui.table.add_column("NAME","Name","200px");
         this.gui.table.add_column("ACCOUNT_TYPE_ID","Acc Type Id");
-        this.gui.table.add_column("TYPENAME","Type Name");
+        this.gui.table.add_column("TYPENAME","Type Name","150px");
         this.gui.table.add_column("PARENT_ACCOUNT_ID","Parent Acc Id");
         this.gui.table.gpos(1,1);
         this.gui.table.gwidth(30);    

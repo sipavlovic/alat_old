@@ -1,5 +1,6 @@
 Login_Block = function(paramdict,callback) {
     alat.Block.call(this,paramdict,callback);
+    this.default_readonly = false;
     // DATA
     this.vars = Object();
     this.vars.username = new alat.String(this,"USERNAME").variable();
