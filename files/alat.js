@@ -1913,7 +1913,7 @@ alat.Block = function(paramdict,callback) {
 		// if autofields is set to true then all fields are transfered
 		if (autofields==true) {
 			for (var fname in this.buffer.fielddict) {
-				v_paramdict[fname]=this.server_get(fname);
+				v_paramdict[fname]=alat.lib.nvl(this.server_get(fname),null);
 			}
 		} 
         v_retdict = {command:command,block:v_blockdict,param:v_paramdict};
@@ -2017,6 +2017,7 @@ alat.Manager = function() {
             datadict = block.data_dict(command,data,autofields);
         }
         var text = alat.lib.str(datadict);
+        // alert("Datadict:"+text);
         return alat.ajax_call(page,text,callback,async,block);
     }
 }

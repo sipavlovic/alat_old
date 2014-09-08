@@ -1,8 +1,8 @@
 Chart_of_Acc_Block = function(paramdict,callback) {
     alat.Block.call(this,paramdict,callback);
-    this.allow_insert = false;
-    this.allow_delete = false;
-    this.default_readonly = true;
+    this.allow_insert = true;
+    this.allow_delete = true;
+    this.default_readonly = false;
     // DATA
     this.vars = Object();
     this.vars.id = new alat.Integer(this,"ID").column();
@@ -11,6 +11,7 @@ Chart_of_Acc_Block = function(paramdict,callback) {
     this.vars.name = new alat.String(this,"NAME").column();
     this.vars.account_type_id = new alat.Integer(this,"ACCOUNT_TYPE_ID").column();
     this.vars.typename = new alat.String(this,"TYPENAME").column();
+        this.vars.typename.readonly = true;
     this.vars.parent_account_id = new alat.Integer(this,"PARENT_ACCOUNT_ID").column();
     // GUI
     this.gui = Object();
@@ -30,6 +31,17 @@ Chart_of_Acc_Block = function(paramdict,callback) {
         this.gui.table.gwidth(30);    
     // EVENTS
     this.evt = Object();
+    this.evt.row_after = new alat.RowAfterEvent(this,function(block,data) {
+            if (block.get_row_status()==alat.const.ROWSTATUS_UPDATE) {
+                if (block.is_changed()) {
+                        var ajaxobj = alat.manager.call_server("chart_of_acc.php","row_after",null,block.ajax_eval,false,block,true);
+                        return !ajaxobj.error;
+                }
+            } else {
+                var ajaxobj = alat.manager.call_server("chart_of_acc.php","row_after",null,block.ajax_eval,false,block,true);
+                return !ajaxobj.error;
+            }
+        });        
     // INITIAL
     this.draw_gui();
     alat.manager.call_server("chart_of_acc.php","populate",null,this.ajax_eval,false,this,true);
